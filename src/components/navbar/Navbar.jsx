@@ -40,7 +40,7 @@ const Navbar = () => {
                 {/* Navigation Links */}
                 <nav className="hidden lg:flex space-x-8 items-center">
                     <a href="/" className="hover:text-gray-300 transition duration-200">Home</a>
-                    <a href="/shop" className="hover:text-gray-300 transition duration-200">Shop</a>
+                    <a href="/Shop" className="hover:text-gray-300 transition duration-200">Shop</a>
                     <a href="/cart" className="hover:text-gray-300 transition duration-200">Cart</a>
                     <a href="/checkout" className="hover:text-gray-300 transition duration-200">Checkout</a>
                     <a href="/account" className="hover:text-gray-300 transition duration-200">My Account</a>
