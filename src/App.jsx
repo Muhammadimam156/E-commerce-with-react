@@ -32,13 +32,13 @@ function App() {
       {/* 2. HAMESHA DIKHNE WALE COMPONENTS (Routes ke Bahar) */}
       <Navbar />
       
-      {/* 3. DYNAMIC CONTENT AREA (Routes ke Andar) */}
+     
       <main>
           <Routes>
-              {/* Home Page: / URL par aapke saare components dikhenge */}
+              
               <Route path="/" element={<HomePageContent />} />
               
-              {/* Shop Page: /shop URL par sirf Shop component dikhega */}
+              
               <Route path="/shop" element={<Shop />} /> 
 
               {/* Other Pages */}
