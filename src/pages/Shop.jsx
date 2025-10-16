@@ -1,141 +1,3 @@
-// import React, { useState } from 'react';
-
-// // --- Data (Example Products) ---
-// const allProducts = [
-//     { id: 1, name: 'Pro Wireless Headphones', price: 149.99, category: 'Headphones', rating: 4, imageUrl: 'path/to/image1.jpg' },
-//     { id: 2, name: 'Ultra HD 4K Monitor', price: 399.00, category: 'Monitors', rating: 5, imageUrl: 'path/to/image2.jpg' },
-//     { id: 3, name: 'Compact Bluetooth Speaker', price: 45.00, category: 'Speakers', rating: 4, imageUrl: 'path/to/image3.jpg' },
-//     { id: 4, name: 'Gaming Mechanical Keyboard', price: 89.99, category: 'Keyboards', rating: 5, imageUrl: 'path/to/image4.jpg' },
-//     { id: 5, name: 'Ergonomic Mouse', price: 25.50, category: 'Accessories', rating: 4, imageUrl: 'path/to/image5.jpg' },
-//     { id: 6, name: 'Portable Power Bank', price: 35.00, category: 'Accessories', rating: 3, imageUrl: 'path/to/image6.jpg' },
-//     { id: 7, name: 'Noise Cancelling Earbuds', price: 79.99, category: 'Headphones', rating: 5, imageUrl: 'path/to/image7.jpg' },
-//     { id: 8, name: 'Webcam 1080p', price: 55.00, category: 'Accessories', rating: 4, imageUrl: 'path/to/image8.jpg' },
-// ];
-
-// // --- HELPER COMPONENT: Star Rating (Reuse from previous code) ---
-// const StarRating = ({ rating }) => {
-//     const fullStars = Math.floor(rating);
-//     const stars = [];
-//     for (let i = 0; i < 5; i++) {
-//         stars.push(
-//             <span key={i} className={i < fullStars ? 'text-yellow-500' : 'text-gray-600'}>★</span>
-//         );
-//     }
-//     return <div className="flex text-sm mb-2">{stars}</div>;
-// };
-
-// // --- HELPER COMPONENT: Product Card (Reuse from previous code) ---
-// const ProductCard = ({ product }) => (
-//     <div className="bg-gray-800 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-orange-500/30 cursor-pointer">
-//         <div className="h-48 bg-gray-700 flex items-center justify-center p-4">
-//             {/* Placeholder for Image */}
-//             <p className="text-gray-400">{product.name}</p>
-//         </div>
-//         <div className="p-4">
-//             <StarRating rating={product.rating} />
-//             <h3 className="text-lg font-semibold text-white mb-2 truncate">{product.name}</h3>
-//             <div className="flex items-baseline mb-3">
-//                 <span className="text-2xl font-bold text-orange-400 mr-2">
-//                     ${product.price.toFixed(2)}
-//                 </span>
-//             </div>
-//             <button className="w-full py-2 bg-orange-500 text-gray-900 font-bold rounded-md hover:bg-orange-600 transition duration-300 text-sm">
-//                 Add to Cart
-//             </button>
-//         </div>
-//     </div>
-// );
-
-
-// // === MAIN SHOP PAGE COMPONENT ===
-// const Shop = () => {
-//     // State to manage filters (e.g., selected category)
-//     const [selectedCategory, setSelectedCategory] = useState('All');
-    
-//     // Filtering Logic
-//     const filteredProducts = allProducts.filter(product => 
-//         selectedCategory === 'All' || product.category === selectedCategory
-//     );
-
-//     // Available categories for the filter sidebar
-//     const categories = ['All', 'Headphones', 'Speakers', 'Keyboards', 'Monitors', 'Accessories'];
-
-//     return (
-//         <div className="bg-gray-900 text-white min-h-screen">
-//             <div className="container mx-auto py-10 px-4">
-                
-//                 <h1 className="text-4xl font-bold mb-8 text-white border-b border-yellow-500 pb-2 w-fit">
-//                     Shop Our Collection
-//                 </h1>
-                
-//                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    
-//                     {/* --- COLUMN 1: FILTERS SIDEBAR --- */}
-//                     <div className="lg:col-span-1">
-//                         <div className="bg-gray-800 p-6 rounded-xl shadow-lg sticky top-5">
-//                             <h3 className="text-2xl font-bold mb-5 text-white">Filter Products</h3>
-                            
-//                             {/* Category Filter */}
-//                             <div className="mb-6">
-//                                 <p className="font-semibold text-gray-300 mb-2">Category</p>
-//                                 {categories.map((cat) => (
-//                                     <button
-//                                         key={cat}
-//                                         onClick={() => setSelectedCategory(cat)}
-//                                         className={`block w-full text-left py-1 px-3 rounded transition duration-200 
-//                                             ${selectedCategory === cat 
-//                                                 ? 'bg-orange-500 text-gray-900 font-bold' 
-//                                                 : 'text-gray-300 hover:bg-gray-700'
-//                                             }`}
-//                                     >
-//                                         {cat}
-//                                     </button>
-//                                 ))}
-//                             </div>
-
-//                             {/* Price Filter (Placeholder) */}
-//                             <div className="mb-6">
-//                                 <p className="font-semibold text-gray-300 mb-2">Price Range</p>
-//                                 <input type="range" className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer range-lg" />
-//                                 <p className="text-sm text-gray-400 mt-1">$0 - $500 (Placeholder)</p>
-//                             </div>
-//                         </div>
-//                     </div>
-
-//                     {/* --- COLUMN 2: PRODUCT GRID --- */}
-//                     <div className="lg:col-span-3">
-//                         <div className="flex justify-between items-center mb-6">
-//                             <p className="text-gray-400">Showing {filteredProducts.length} results</p>
-//                             {/* Sort Option (Placeholder) */}
-//                             <select className="bg-gray-800 border border-gray-700 text-white p-2 rounded-lg focus:ring-orange-500 focus:border-orange-500">
-//                                 <option>Sort by Latest</option>
-//                                 <option>Sort by Price: Low to High</option>
-//                                 <option>Sort by Rating</option>
-//                             </select>
-//                         </div>
-
-//                         {/* Product Grid (4 columns) */}
-//                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-//                             {filteredProducts.map((product) => (
-//                                 <ProductCard key={product.id} product={product} />
-//                             ))}
-//                         </div>
-                        
-//                         {/* Pagination (Placeholder) */}
-//                         <div className="text-center mt-10">
-//                             <button className="py-2 px-4 border border-gray-600 text-gray-400 rounded-full hover:bg-gray-700 transition duration-300">
-//                                 Load More
-//                             </button>
-//                         </div>
-//                     </div>
-                    
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Shop;
 
 
 import React, { useState, useEffect } from 'react';
@@ -161,11 +23,11 @@ const StarRating = ({ rating }) => {
 const ProductCard = ({ product }) => (
     <div className="bg-gray-800 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-orange-500/30 cursor-pointer">
         <div className="h-48 bg-gray-700 flex items-center justify-center p-4">
-            {product.image ? (
+            {product.imageUrl ? (
                 <img
-                    src={product.image}
+                    src={product.imageUrl}
                     alt={product.name}
-                    className="h-full w-full object-cover rounded-lg"
+                    className="h-48 w-[900px] object-cover rounded-lg"
                 />
             ) : (
                 <p className="text-gray-400">{product.name}</p>
