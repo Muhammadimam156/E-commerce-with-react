@@ -11,6 +11,7 @@ import Products from "./components/products/Products";
 
 // Page Imports
 import Shop from "./pages/Shop"; 
+import Footer from "./components/Footer/Footer";
 // import Checkout from "./pages/Checkout"; 
 // import MyAccount from "./pages/MyAccount"; 
 
