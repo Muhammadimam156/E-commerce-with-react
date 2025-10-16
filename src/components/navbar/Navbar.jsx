@@ -52,6 +52,7 @@ const Navbar = () => {
             {/* Mobile Menu Dropdown */}
             {isOpen && (
                 <div className="w-full bg-gray-800 lg:hidden">
+                    
                     <nav className="hidden lg:flex space-x-8 items-center">
                         <Link to="/" className="hover:text-gray-300 transition duration-200">Home</Link>
                         <Link to="/Shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
