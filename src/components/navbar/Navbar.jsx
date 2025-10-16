@@ -41,24 +41,23 @@ const Navbar = () => {
 
                 {/* Navigation Links */}
                 <nav className="hidden lg:flex space-x-8 items-center">
-                    <a href="/" className="hover:text-gray-300 transition duration-200">Home</a>
-                    {/* <a href="/Shop" className="hover:text-gray-300 transition duration-200">Shop</a> */}
-                    <Link to="/Shop">Shop</Link>
-                    <a href="/Cart" className="hover:text-gray-300 transition duration-200">Cart</a>
-                    <a href="/Checkout" className="hover:text-gray-300 transition duration-200">Checkout</a>
-                    <a href="/Account" className="hover:text-gray-300 transition duration-200">My Account</a>
+                    <Link to="/" className="hover:text-gray-300 transition duration-200">Home</Link>
+                    <Link to="/Shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
+                    <Link to="/Cart" className="hover:text-gray-300 transition duration-200">Cart</Link>
+                    <Link to="/Checkout" className="hover:text-gray-300 transition duration-200">Checkout</Link>
+                    <Link to="/Account" className="hover:text-gray-300 transition duration-200">My Account</Link>
                 </nav>
             </header>
 
             {/* Mobile Menu Dropdown */}
             {isOpen && (
                 <div className="w-full bg-gray-800 lg:hidden">
-                    <nav className="flex flex-col items-center space-y-4 py-4">
-                        <a href="/" className="hover:text-gray-300 transition duration-200">Home</a>
-                        <a href="/../pages/Shop" className="hover:text-gray-300 transition duration-200">Shop</a>
-                        <a href="../../pages/Cart" className="hover:text-gray-300 transition duration-200">Cart</a>
-                        <a href="../../pages/Checkout" className="hover:text-gray-300 transition duration-200">Checkout</a>
-                        <a href="../../pages/Account" className="hover:text-gray-300 transition duration-200">My Account</a>
+                    <nav className="hidden lg:flex space-x-8 items-center">
+                        <Link to="/" className="hover:text-gray-300 transition duration-200">Home</Link>
+                        <Link to="/Shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
+                        <Link to="/Cart" className="hover:text-gray-300 transition duration-200">Cart</Link>
+                        <Link to="/Checkout" className="hover:text-gray-300 transition duration-200">Checkout</Link>
+                        <Link to="/Account" className="hover:text-gray-300 transition duration-200">My Account</Link>
                     </nav>
                 </div>
             )}
