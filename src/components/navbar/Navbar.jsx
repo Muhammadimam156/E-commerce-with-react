@@ -40,10 +40,10 @@ const Navbar = () => {
                 {/* Navigation Links */}
                 <nav className="hidden lg:flex space-x-8 items-center">
                     <a href="/" className="hover:text-gray-300 transition duration-200">Home</a>
-                    <a href="/Shop" className="hover:text-gray-300 transition duration-200">Shop</a>
-                    <a href="/cart" className="hover:text-gray-300 transition duration-200">Cart</a>
-                    <a href="/checkout" className="hover:text-gray-300 transition duration-200">Checkout</a>
-                    <a href="/account" className="hover:text-gray-300 transition duration-200">My Account</a>
+                    <a href="../../pages/Shop" className="hover:text-gray-300 transition duration-200">Shop</a>
+                    <a href="../../pages/Cart" className="hover:text-gray-300 transition duration-200">Cart</a>
+                    <a href="../../pages/Checkout" className="hover:text-gray-300 transition duration-200">Checkout</a>
+                    <a href="../../pages/Account" className="hover:text-gray-300 transition duration-200">My Account</a>
                 </nav>
             </header>
 
@@ -52,10 +52,10 @@ const Navbar = () => {
                 <div className="w-full bg-gray-800 lg:hidden">
                     <nav className="flex flex-col items-center space-y-4 py-4">
                         <a href="/" className="hover:text-gray-300 transition duration-200">Home</a>
-                        <a href="/shop" className="hover:text-gray-300 transition duration-200">Shop</a>
-                        <a href="/cart" className="hover:text-gray-300 transition duration-200">Cart</a>
-                        <a href="/checkout" className="hover:text-gray-300 transition duration-200">Checkout</a>
-                        <a href="/account" className="hover:text-gray-300 transition duration-200">My Account</a>
+                        <a href="../../pages/Shop" className="hover:text-gray-300 transition duration-200">Shop</a>
+                        <a href="../../pages/Cart" className="hover:text-gray-300 transition duration-200">Cart</a>
+                        <a href="../../pages/Checkout" className="hover:text-gray-300 transition duration-200">Checkout</a>
+                        <a href="../../pages/Account" className="hover:text-gray-300 transition duration-200">My Account</a>
                     </nav>
                 </div>
             )}
