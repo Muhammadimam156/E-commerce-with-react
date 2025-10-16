@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import logo from '../../assets/logo/logo1.png';
+import { Link } from 'react-router-dom';
+
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +42,8 @@ const Navbar = () => {
                 {/* Navigation Links */}
                 <nav className="hidden lg:flex space-x-8 items-center">
                     <a href="/" className="hover:text-gray-300 transition duration-200">Home</a>
-                    <a href="./Shop" className="hover:text-gray-300 transition duration-200">Shop</a>
+                    {/* <a href="/Shop" className="hover:text-gray-300 transition duration-200">Shop</a> */}
+                    <Link to="/Shop">Shop</Link>
                     <a href="/Cart" className="hover:text-gray-300 transition duration-200">Cart</a>
                     <a href="/Checkout" className="hover:text-gray-300 transition duration-200">Checkout</a>
                     <a href="/Account" className="hover:text-gray-300 transition duration-200">My Account</a>
