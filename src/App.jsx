@@ -11,7 +11,7 @@ import Products from "./components/products/Products";
 
 // Page Imports
 import Shop from "./pages/Shop"; 
-import Footer from "./components/Footer/Footer";
+import CustomerRewiews from "./components/customerReviews/CustomerRewiews";
 // import Checkout from "./pages/Checkout"; 
 // import MyAccount from "./pages/MyAccount"; 
 
@@ -22,6 +22,7 @@ const HomePageContent = () => (
         <Slider />
         <SpecialOffer />
         <Products />
+       <CustomerRewiews />
         {/* Agar aur sections hain to yahan aayenge */}
     </div>
 );
