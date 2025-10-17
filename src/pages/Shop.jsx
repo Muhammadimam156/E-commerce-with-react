@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 
 // --- HELPER COMPONENT: Star Rating ---
@@ -55,6 +53,9 @@ const Shop = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [visibleCount, setVisibleCount] = useState(10);
+    const [showLoadMore, setShowLoadMore] = useState(true);
+    const [priceRange, setPriceRange] = useState([0, 500]);
 
     // Fetch products from API
     useEffect(() => {
@@ -64,9 +65,9 @@ const Shop = () => {
                 const res = await fetch('https://e-commerce-api-nine-navy.vercel.app/api/products');
                 if (!res.ok) throw new Error('Failed to fetch products');
                 const data = await res.json();
-                // Normalize data if needed
                 setProducts(data);
                 setFilteredProducts(data);
+                setShowLoadMore(data.length > 10);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -80,13 +81,35 @@ const Shop = () => {
     const categories = ['All', ...new Set(products.map(p => p.category || 'Uncategorized'))];
 
     // Filter logic
+    const filterProducts = (cat, range) => {
+        let filtered = products;
+        if (cat !== 'All') {
+            filtered = filtered.filter(p => p.category === cat);
+        }
+        filtered = filtered.filter(
+            p => typeof p.price === 'number' && p.price >= range[0] && p.price <= range[1]
+        );
+        setFilteredProducts(filtered);
+        setVisibleCount(10);
+        setShowLoadMore(filtered.length > 10);
+    };
+
     const handleCategoryChange = (cat) => {
         setSelectedCategory(cat);
-        if (cat === 'All') {
-            setFilteredProducts(products);
-        } else {
-            setFilteredProducts(products.filter(p => p.category === cat));
-        }
+        filterProducts(cat, priceRange);
+    };
+
+    const handlePriceChange = (e) => {
+        const value = Number(e.target.value);
+        const newRange = [0, value];
+        setPriceRange(newRange);
+        filterProducts(selectedCategory, newRange);
+    };
+
+    // Load more handler
+    const handleLoadMore = () => {
+        setVisibleCount(filteredProducts.length);
+        setShowLoadMore(false);
     };
 
     // Loading or error states
@@ -105,6 +128,9 @@ const Shop = () => {
             </div>
         );
     }
+
+    // Products to show
+    const productsToShow = filteredProducts.slice(0, visibleCount);
 
     return (
         <div className="bg-gray-900 text-white min-h-screen">
@@ -137,11 +163,21 @@ const Shop = () => {
                                 ))}
                             </div>
 
-                            {/* Price Filter (Placeholder) */}
+                            {/* Price Filter */}
                             <div className="mb-6">
                                 <p className="font-semibold text-gray-300 mb-2">Price Range</p>
-                                <input type="range" className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer range-lg" />
-                                <p className="text-sm text-gray-400 mt-1">$0 - $500 (Placeholder)</p>
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={500}
+                                    step={10}
+                                    value={priceRange[1]}
+                                    onChange={handlePriceChange}
+                                    className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer range-lg"
+                                />
+                                <p className="text-sm text-gray-400 mt-1">
+                                    ${priceRange[0]} - ${priceRange[1]}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -149,18 +185,13 @@ const Shop = () => {
                     {/* --- PRODUCT GRID --- */}
                     <div className="lg:col-span-3">
                         <div className="flex justify-between items-center mb-6">
-                            <p className="text-gray-400">Showing {filteredProducts.length} results</p>
-                            <select className="bg-gray-800 border border-gray-700 text-white p-2 rounded-lg focus:ring-orange-500 focus:border-orange-500">
-                                <option>Sort by Latest</option>
-                                <option>Sort by Price: Low to High</option>
-                                <option>Sort by Rating</option>
-                            </select>
+                            <p className="text-gray-400">Showing {productsToShow.length} results</p>
                         </div>
 
                         {/* Products */}
-                        {filteredProducts.length > 0 ? (
+                        {productsToShow.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                {filteredProducts.map((product) => (
+                                {productsToShow.map((product) => (
                                     <ProductCard key={product._id || product.id} product={product} />
                                 ))}
                             </div>
@@ -168,12 +199,17 @@ const Shop = () => {
                             <p className="text-gray-500 text-center mt-10">No products found in this category.</p>
                         )}
 
-                        {/* Pagination (Placeholder) */}
-                        <div className="text-center mt-10">
-                            <button className="py-2 px-4 border border-gray-600 text-gray-400 rounded-full hover:bg-gray-700 transition duration-300">
-                                Load More
-                            </button>
-                        </div>
+                        {/* Pagination (Load More) */}
+                        {showLoadMore && (
+                            <div className="text-center mt-10">
+                                <button
+                                    className="py-2 px-4 border border-gray-600 text-gray-400 rounded-full hover:bg-gray-700 transition duration-300"
+                                    onClick={handleLoadMore}
+                                >
+                                    Load More
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
