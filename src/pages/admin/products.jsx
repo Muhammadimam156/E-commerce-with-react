@@ -14,7 +14,10 @@ import axios from "axios";
         - Delete: remove a product
 */
 
-const API_BASE = "https://e-commerce-api-nine-navy.vercel.app/api/products"; // change as needed
+const API_BASE = "https://e-commerce-api-nine-navy.vercel.app/api/products";
+
+
+ // change as needed
 
 export default function AdminProducts() {
     const [products, setProducts] = useState([]);
