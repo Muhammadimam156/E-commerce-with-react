@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-// Firebase imports hata diye gaye hain
-// External API link
+
 const API_URL = 'https://e-commerce-api-nine-navy.vercel.app/api/reviews';
 
-// --- HELPER COMPONENT: Star Rating ---
 const StarRating = ({ rating = 0 }) => {
-    // Rating ko 0 aur 5 ke beech mein rakhein
     const safeRating = Math.max(0, Math.min(5, rating));
     const fullStars = Math.floor(safeRating);
     const stars = [];
@@ -22,14 +19,9 @@ const StarRating = ({ rating = 0 }) => {
     return <div className="flex text-lg">{stars}</div>;
 };
 
-
-// --- HELPER COMPONENT: Review Card ---
 const ReviewCard = ({ review }) => {
-    // API response fields use kar rahe hain
     const reviewerName = review.author || `User-${review.id ? String(review.id).slice(-4) : 'Unknown'}`;
     const initial = reviewerName.charAt(0).toUpperCase();
-    
-    // Date: Agar date string format mein hai, to usse format karein
     const dateDisplay = review.date ? new Date(review.date).toLocaleDateString() : 'Unknown Date';
     const comment = review.comment || 'No comment provided.';
 
@@ -50,7 +42,6 @@ const ReviewCard = ({ review }) => {
                         {review.productId ? `Product: ${review.productId} | ` : ''} 
                         {dateDisplay}
                     </p>
-                    {/* Unique ID dikhane ke liye (Agar API ne ID di hai) */}
                     <p className="text-[10px] text-gray-400">Review ID: {review.id || 'N/A'}</p> 
                 </div>
             </div>
@@ -58,11 +49,7 @@ const ReviewCard = ({ review }) => {
     );
 };
 
-
-// --- HELPER COMPONENT: Add Review Form ---
 const AddReviewForm = ({ onReviewAdded }) => {
-    
-    // Ab 'author' field dobara shamil kiya gaya hai
     const [formData, setFormData] = useState({
         author: '', 
         productId: '',
@@ -86,15 +73,14 @@ const AddReviewForm = ({ onReviewAdded }) => {
         setMessage('');
 
         if (!formData.author || !formData.comment) {
-            setMessage('Kripya apna Naam aur Review comment zaroor likhein.');
+            setMessage('Please make sure to include your Name and Review comment.');
             setIsSubmitting(false);
             return;
         }
 
-        // External API ke liye data
         const reviewData = { 
             ...formData, 
-            date: new Date().toISOString(), // Current date string format mein
+            date: new Date().toISOString(),
             productId: formData.productId || null,
         };
         
@@ -106,23 +92,16 @@ const AddReviewForm = ({ onReviewAdded }) => {
             });
 
             if (res.ok) {
-                // API se response milne par
                 const submittedReview = await res.json();
-                
-                // Message set karein
-                setMessage('Shukriya! Aapka review safaltapoorvak (successfully) submit ho gaya hai.');
-                
-                // Reviews list ko update karein (API ka response use karein)
+                setMessage('Thanks! Your review has been submitted successfully.');
                 onReviewAdded(submittedReview); 
-                
-                // Form ko reset karein
                 setFormData({ author: '', productId: '', rating: 5, comment: '' }); 
             } else {
-                setMessage(`Review submit nahi ho paya. Server error: ${res.status}`);
+                setMessage(`Failed to submit review. Server error: ${res.status}`);
             }
         } catch (error) {
             console.error('Submission Error:', error);
-            setMessage(`Network error. Kripya apna connection check karein. Error: ${error.message}`);
+            setMessage(`Network error. Please check your connection. Error: ${error.message}`);
         } finally {
             setIsSubmitting(false);
         }
@@ -130,23 +109,20 @@ const AddReviewForm = ({ onReviewAdded }) => {
 
     return (
         <div className="bg-white p-8 rounded-xl shadow-2xl">
-            <h3 className="text-2xl font-bold mb-6 text-indigo-700">Apna Review Likhein</h3>
+            <h3 className="text-2xl font-bold mb-6 text-indigo-700">plz write your review</h3>
             <p className="text-sm text-gray-500 mb-4">
-                *Chunki hum login istemaal nahi kar rahe hain, kripya apna naam daal dein.
+                *write your Name.
             </p>
             <form onSubmit={handleSubmit} className="space-y-4">
-                
-                {/* Author Name field dobara shamil kiya gaya hai */}
                 <input
                     name="author"
-                    placeholder="Aapka Naam *"
+                    placeholder="Your Name *"
                     value={formData.author}
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
 
-                {/* Product ID and Rating */}
                 <div className="grid grid-cols-2 gap-4">
                     <input
                         name="productId"
@@ -170,10 +146,9 @@ const AddReviewForm = ({ onReviewAdded }) => {
                     </select>
                 </div>
                 
-                {/* Review Comment */}
                 <textarea
                     name="comment"
-                    placeholder="Apna Review Yahan Likhein *"
+                    placeholder="write your review here *"
                     value={formData.comment}
                     onChange={handleChange}
                     required
@@ -188,12 +163,11 @@ const AddReviewForm = ({ onReviewAdded }) => {
                         isSubmitting ? 'bg-indigo-300 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md'
                     }`}
                 >
-                    {isSubmitting ? 'Bhej Raha Hoon...' : 'Submit Review'}
+                    {isSubmitting ? 'Submitting...' : 'Submit Review'}
                 </button>
 
-                {/* Submission Message */}
                 {message && (
-                    <p className={`mt-3 text-center font-medium ${message.includes('Shukriya') ? 'text-green-600' : 'text-red-600'}`}>
+                    <p className={`mt-3 text-center font-medium ${message.includes('Thanks') ? 'text-green-600' : 'text-red-600'}`}>
                         {message}
                     </p>
                 )}
@@ -202,75 +176,61 @@ const AddReviewForm = ({ onReviewAdded }) => {
     );
 };
 
-
-// --- MAIN COMPONENT ---
 const CustomerReviewApp = () => {
-    // Firebase related state aur hooks hata diye gaye hain
     const [reviews, setReviews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Initial fetch function
     const fetchReviews = async () => {
         setIsLoading(true);
         setError(null);
         try {
             const res = await fetch(API_URL);
             if (!res.ok) {
-                throw new Error(`Data fetch nahi ho paya. Status: ${res.status}`);
+                throw new Error(`Failed to fetch data. Status: ${res.status}`);
             }
             const data = await res.json();
             
             console.log("API Data Received:", data); 
 
-            // API response ko array mein convert ya extract karein
             let reviewsArray = Array.isArray(data) ? data : data.reviews || [];
             
-            // Date ke hisaab se client-side sorting (latest first)
             const sortedReviews = reviewsArray.sort((a, b) => {
                 const dateA = a.date ? new Date(a.date).getTime() : 0;
                 const dateB = b.date ? new Date(b.date).getTime() : 0;
-                return dateB - dateA; // Descending order
+                return dateB - dateA;
             });
 
             setReviews(sortedReviews.filter(r => r && typeof r === 'object'));
 
         } catch (err) {
             console.error("Fetch Error:", err);
-            setError(`Reviews load nahi ho paye. Error: ${err.message}`);
+            setError(`Failed to load reviews. Error: ${err.message}`);
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Component mount hone par data fetch karein
     useEffect(() => {
         fetchReviews();
     }, []);
 
-    // Review submit hone par list ko update karne ka handler
     const handleNewReview = (newReview) => {
-        // Naya review front-end mein sabse upar add karein
         setReviews(prev => [newReview, ...prev]);
     };
 
     return (
         <section className="py-16 bg-gray-100 font-sans min-h-screen">
             <div className="container mx-auto px-4">
-                
                 <h2 className="text-4xl font-extrabold mb-12 text-center text-gray-900 border-b-4 border-indigo-500 pb-2 w-fit mx-auto">
                     Customer Reviews
                 </h2>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    
-                    {/* COLUMN 1: REVIEW SUBMISSION FORM */}
                     <div className="lg:col-span-1 order-2 lg:order-1">
-                        {/* Auth check ki zaroorat nahi ab */}
                         <AddReviewForm onReviewAdded={handleNewReview} />
                     </div>
 
-                    {/* COLUMN 2 & 3: REVIEWS SLIDER */}
                     <div className="lg:col-span-2 order-1 lg:order-2">
                         <h3 className="text-xl font-bold mb-4 text-gray-800">Latest Customer Feedback (API Fetched)</h3>
                         
@@ -282,13 +242,11 @@ const CustomerReviewApp = () => {
                                 {reviews.length === 0 ? (
                                     <p className="text-gray-500 py-10">Abhi tak koi review nahi hai. Aap pehla review likhein!</p>
                                 ) : (
-                                    // Slider container
                                     <div 
                                         className="flex overflow-x-scroll pb-6 space-x-6 hide-scrollbar"
                                         style={{ scrollSnapType: 'x mandatory' }}
                                     >
                                         {reviews.map((review, index) => (
-                                            // Review ID ya index ko key ke taur par istemaal karein
                                             <ReviewCard key={review.id || index} review={review} />
                                         ))}
                                     </div>
@@ -299,14 +257,13 @@ const CustomerReviewApp = () => {
                 </div>
             </div>
             
-            {/* Custom CSS for hiding the scrollbar while keeping the scrollable functionality */}
             <style jsx="true">{`
                 .hide-scrollbar {
-                    -ms-overflow-style: none; /* IE and Edge */
-                    scrollbar-width: none; /* Firefox */
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
                 }
                 .hide-scrollbar::-webkit-scrollbar {
-                    display: none; /* Chrome, Safari and Opera */
+                    display: none;
                 }
             `}</style>
         </section>

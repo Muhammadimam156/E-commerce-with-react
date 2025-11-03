@@ -7,6 +7,7 @@ import Navbar from "./components/navbar/Navbar";
 import Slider from "./components/slider/Slider";
 import SpecialOffer from "./components/specialOffer/SpecialOffer";
 import Products from "./components/products/Products";
+import AdminProducts from "./pages/admin/products";
 // import Footer from "./components/footer/Footer"; // Assuming you have a Footer component
 
 // Page Imports
@@ -29,9 +30,8 @@ const HomePageContent = () => (
 
 function App() {
   return (
-    <div className="bg-gray-900 min-h-screen"> 
+    <div className=" min-h-screen"> 
       
-      {/* 2. HAMESHA DIKHNE WALE COMPONENTS (Routes ke Bahar) */}
       <Navbar />
       
      
@@ -39,9 +39,9 @@ function App() {
           <Routes>
               
               <Route path="/" element={<HomePageContent />} />
-              
-              
-              <Route path="/shop" element={<Shop />} /> 
+
+               <Route path="/admin/products" element={<AdminProducts />} />
+              <Route path="/shop" element={<Shop />} />
 
               {/* Other Pages */}
               {/* <Route path="/checkout" element={<Checkout />} /> */}
