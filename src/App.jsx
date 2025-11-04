@@ -2,57 +2,50 @@ import React from "react";
 import { Routes, Route } from 'react-router-dom'; 
 import './index.css';
 
-// 1. Zaroori Imports
 import Navbar from "./components/navbar/Navbar";
 import Slider from "./components/slider/Slider";
 import SpecialOffer from "./components/specialOffer/SpecialOffer";
 import Products from "./components/products/Products";
 import AdminProducts from "./pages/admin/products";
-// import Footer from "./components/footer/Footer"; // Assuming you have a Footer component
+import AdminLayout from "./components/admin/AdminLayout";
+import RequireAdmin from "./components/auth/RequireAdmin";
 
-// Page Imports
 import Shop from "./pages/Shop"; 
 import CustomerReviewApp from "./components/customerReviews/CustomerRewiews";
-// import Checkout from "./pages/Checkout"; 
-// import MyAccount from "./pages/MyAccount"; 
+import AdminDashboard from "./pages/admin/dashboard";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Account from "./pages/Account.jsx";
+import Checkout from "./pages/Checkout.jsx";
 
-// === HOME PAGE CONTENT ===
-// Yeh component aapke home screen ke saare sections ko ek saath rakhega.
 const HomePageContent = () => (
-    <div>
-        <Slider />
-        <SpecialOffer />
-        <Products />
-       <CustomerReviewApp />
-        {/* Agar aur sections hain to yahan aayenge */}
-    </div>
+  <div>
+    <Slider />
+    <SpecialOffer />
+    <Products />
+    <CustomerReviewApp />
+  </div>
 );
 
 function App() {
   return (
-    <div className=" min-h-screen"> 
-      
-      <Navbar />
-      
-     
-      <main>
-          <Routes>
-              
-              <Route path="/" element={<HomePageContent />} />
-
-               <Route path="/admin/products" element={<AdminProducts />} />
-              <Route path="/shop" element={<Shop />} />
-
-              {/* Other Pages */}
-              {/* <Route path="/checkout" element={<Checkout />} /> */}
-              {/* <Route path="/my-account" element={<MyAccount />} /> */}
-          </Routes>
-      </main>
-
-      {/* 4. HAMESHA DIKHNE WALE COMPONENTS (Routes ke Bahar) */}
-      {/* <Footer />  */}
-
-    </div>
+  <div className=" min-h-screen"> 
+    <Navbar />
+    <main>
+    <Routes>
+      <Route path="/" element={<HomePageContent />} />
+      <Route path="/admin" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
+      <Route index element={<AdminDashboard />} />
+      <Route path="products" element={<AdminProducts />} />
+      </Route>
+      <Route path="/shop" element={<Shop />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/account" element={<Account />} />
+      <Route path="/checkout" element={<Checkout />} />
+    </Routes>
+    </main>
+  </div>
   );
 }
 

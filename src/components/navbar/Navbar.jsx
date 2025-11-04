@@ -42,23 +42,22 @@ const Navbar = () => {
                 {/* Navigation Links */}
                 <nav className="hidden lg:flex space-x-8 items-center">
                     <Link to="/" className="hover:text-gray-300 transition duration-200">Home</Link>
-                    <Link to="/Shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
-                    <Link to="/Cart" className="hover:text-gray-300 transition duration-200">Cart</Link>
-                    <Link to="/Checkout" className="hover:text-gray-300 transition duration-200">Checkout</Link>
-                    <Link to="/Account" className="hover:text-gray-300 transition duration-200">My Account</Link>
+                    <Link to="/shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
+                    <Link to="/cart" className="hover:text-gray-300 transition duration-200">Cart</Link>
+                    <Link to="/checkout" className="hover:text-gray-300 transition duration-200">Checkout</Link>
+                    <Link to="/account" className="hover:text-gray-300 transition duration-200">My Account</Link>
                 </nav>
             </header>
 
             {/* Mobile Menu Dropdown */}
             {isOpen && (
                 <div className="w-full bg-gray-800 lg:hidden">
-                    
-                    <nav className="hidden lg:flex space-x-8 items-center">
-                        <Link to="/" className="hover:text-gray-300 transition duration-200">Home</Link>
-                        <Link to="/Shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
-                        <Link to="/Cart" className="hover:text-gray-300 transition duration-200">Cart</Link>
-                        <Link to="/Checkout" className="hover:text-gray-300 transition duration-200">Checkout</Link>
-                        <Link to="/Account" className="hover:text-gray-300 transition duration-200">My Account</Link>
+                    <nav className="flex flex-col items-start space-y-2 p-4">
+                        <Link onClick={toggleMenu} to="/" className="hover:text-gray-300 transition duration-200">Home</Link>
+                        <Link onClick={toggleMenu} to="/shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
+                        <Link onClick={toggleMenu} to="/cart" className="hover:text-gray-300 transition duration-200">Cart</Link>
+                        <Link onClick={toggleMenu} to="/checkout" className="hover:text-gray-300 transition duration-200">Checkout</Link>
+                        <Link onClick={toggleMenu} to="/account" className="hover:text-gray-300 transition duration-200">My Account</Link>
                     </nav>
                 </div>
             )}
