@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const API_URL = 'https://e-commerce-api-nine-navy.vercel.app/api/reviews';
 
-const StarRating = ({ rating = 0 }) => {
+const   StarRating = ({ rating = 0 }) => {
     const safeRating = Math.max(0, Math.min(5, rating));
     const fullStars = Math.floor(safeRating);
     const stars = [];
