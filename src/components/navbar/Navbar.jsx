@@ -2,25 +2,27 @@ import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import logo from '../../assets/logo/logo1.png';
 import { Button } from "../ui/button";
-// import Profile from "../../pages/myAccount"
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
-
-    const toggleMenu = () => setIsOpen(!isOpen);
-
-    
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    setUser(storedUser);
-  }, []); // page load pe check
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    window.location.href = "/";
-  };
     const [user, setUser] = useState(null);
+
+    const toggleMenu = () => setIsOpen((v) => !v);
+
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem("user");
+            setUser(raw ? JSON.parse(raw) : null);
+        } catch {
+            setUser(null);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("user");
+        setUser(null);
+        window.location.href = "/";
+    };
 
     return (
         <div className="bg-gray-900 text-white flex flex-col items-center">
@@ -47,19 +49,9 @@ const Navbar = () => {
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             {isOpen ? (
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             ) : (
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 6h16M4 12h16M4 18h16"
-                                />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                             )}
                         </svg>
                     </button>
@@ -74,11 +66,7 @@ const Navbar = () => {
 
                     {user ? (
                         <div className="flex items-center">
-                            <Link
-                                to="/profile"
-                                aria-label="My Account"
-                                className="group"
-                            >
+                            <Link to="/profile" aria-label="My Account" className="group">
                                 <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg font-semibold uppercase ring-2 ring-gray-600 group-hover:ring-gray-400 transition">
                                     {user?.name?.trim()?.charAt(0) ||
                                      user?.username?.trim()?.charAt(0) ||
@@ -95,40 +83,38 @@ const Navbar = () => {
                         </div>
                     )}
                 </nav>
-                </header>
+            </header>
 
-                {/* Mobile Nav */}
+            {/* Mobile Nav */}
             {isOpen && (
                 <div className="w-full bg-gray-800 lg:hidden border-b border-gray-700">
-                    <nav className="flex flex-col items-start space-y-2 p-4">
-                        <Link onClick={toggleMenu} to="/" className="hover:text-gray-300 transition duration-200">Home</Link>
-                        <Link onClick={toggleMenu} to="/shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
-                        <Link onClick={toggleMenu} to="/cart" className="hover:text-gray-300 transition duration-200">Cart</Link>
-                        <Link onClick={toggleMenu} to="/checkout" className="hover:text-gray-300 transition duration-200">Checkout</Link>
+                    <div className="w-full max-w-7xl mx-auto">
+                        <nav className="flex flex-col items-start space-y-2 p-4">
+                            <Link onClick={toggleMenu} to="/" className="hover:text-gray-300 transition duration-200">Home</Link>
+                            <Link onClick={toggleMenu} to="/shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
+                            <Link onClick={toggleMenu} to="/cart" className="hover:text-gray-300 transition duration-200">Cart</Link>
+                            <Link onClick={toggleMenu} to="/checkout" className="hover:text-gray-300 transition duration-200">Checkout</Link>
 
-                        {user ? (
-                            <>
-                                <Link onClick={toggleMenu} to="/account" className="hover:text-gray-300 transition duration-200">
-                                    My Account
-                                </Link>
-                                <button
-                                    onClick={() => { toggleMenu(); handleLogout(); }}
-                                    className="text-left text-red-300 hover:text-red-200 transition duration-200"
-                                >
-                                    Logout
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <Link onClick={toggleMenu} to="/login" className="hover:text-gray-300 transition duration-200">
-                                    Login
-                                </Link>
-                                <Link onClick={toggleMenu} to="/signup" className="hover:text-gray-300 transition duration-200">
-                                    Signup
-                                </Link>
-                            </>
-                        )}
-                    </nav>
+                             {user ? (
+                        <div className="flex items-center">
+                            <Link to="/profile" aria-label="My Account" className="group">
+                                <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg font-semibold uppercase ring-2 ring-gray-600 group-hover:ring-gray-400 transition">
+                                    {user?.name?.trim()?.charAt(0) ||
+                                     user?.username?.trim()?.charAt(0) ||
+                                     user?.email?.trim()?.charAt(0) ||
+                                     'U'}
+                                </div>
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="flex gap-2 ml-2">
+                            <Button variant="outline" size="lg">
+                                <Link to="/signup">Signup</Link>
+                            </Button>
+                        </div>
+                    )}
+                        </nav>
+                    </div>
                 </div>
             )}
         </div>

@@ -7,7 +7,7 @@ import speakers from '../../assets/productsImages/speakers.jpg'
 
 // === HELPER COMPONENT: Star Rating (Yahi Rakhte Hain) ===
 const StarRating = ({ rating }) => { 
-    // ... (unchanged star rating logic) ...
+   
     const fullStars = Math.floor(rating);
     const stars = [];
     for (let i = 0; i < 5; i++) {
