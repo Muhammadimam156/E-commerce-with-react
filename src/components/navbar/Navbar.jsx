@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
-import logo from '../../assets/logo/logo1.png';
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
+import logo from '../../assets/logo/logo1.png';
+import { Button } from "../ui/button";
 
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleMenu = () => setIsOpen(!isOpen);
+
+    
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+  }, []); // page load pe check
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.href = "/";
+  };
+    const [user, setUser] = useState(null);
 
     return (
         <div className="bg-gray-900 text-white flex flex-col items-center">
@@ -45,7 +59,29 @@ const Navbar = () => {
                     <Link to="/shop" className="hover:text-gray-300 transition duration-200">Shop</Link>
                     <Link to="/cart" className="hover:text-gray-300 transition duration-200">Cart</Link>
                     <Link to="/checkout" className="hover:text-gray-300 transition duration-200">Checkout</Link>
-                    <Link to="/account" className="hover:text-gray-300 transition duration-200">My Account</Link>
+                    <div>
+        {user ? (
+          <div className="flex items-center gap-3">
+            <span className="text-sm">👋 {user.name}</span>
+            <Button variant="destructive" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Button variant="outline">
+              <Link to="/login">
+              Login
+            </Link></Button>
+              <Button variant="destructive">  <Link
+              to="/signup"
+             
+            >
+              Signup
+            </Link></Button>
+          </div>
+        )}
+      </div>
                 </nav>
             </header>
 
