@@ -106,7 +106,7 @@ const CustomerReviewApp = () => {
                     </>
                 )}
             </div>
-
+              //nice work
             <style jsx="true">{`
                 .hide-scrollbar {
                     -ms-overflow-style: none;
