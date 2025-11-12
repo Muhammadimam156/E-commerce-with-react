@@ -104,13 +104,22 @@ const NavItem = ({ iconText, label, isActive, onClick }) => (
 // ----------------------------------------------------------------------------------
 // PRODUCT FORM MODAL (Handles Add and Edit)
 // ----------------------------------------------------------------------------------
+const ProductFormModal = ({ product = {}, onClose, onSave, setUIMessage }) => {
+    const CATEGORIES = [
+        'Electronics','Cameras','Laptops','Accessories','Headphones','Food','Books',
+        'Clothes/Shoes','Beauty/Health','Sports','Outdoor','Home'
+    ];
 
-const ProductFormModal = ({ product, onClose, onSave, setUIMessage }) => {
     const isEdit = !!product.id;
     const [formData, setFormData] = useState({
         name: product.name || '',
-        price: product.price || 0,
-        stock: product.stock || 0,
+        price: product.price != null ? product.price : 0.0,
+        stock: product.stock != null ? product.stock : 0,
+        description: product.description || '',
+        ratings: product.ratings != null ? product.ratings : 0,
+        images: product.images ? product.images.map(img => (typeof img === 'string' ? { public_id: '', url: img } : img)) : [],
+        category: product.category || '',
+        seller: product.seller || ''
     });
     const [saving, setSaving] = useState(false);
     const [validationError, setValidationError] = useState('');
@@ -119,31 +128,81 @@ const ProductFormModal = ({ product, onClose, onSave, setUIMessage }) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: name === 'price' || name === 'stock' ? Number(value) : value
+            [name]: name === 'price' || name === 'stock' || name === 'ratings' ? Number(value) : value
         }));
         setValidationError('');
     };
 
+    const addImage = (url = '') => {
+        setFormData(prev => ({ ...prev, images: [...prev.images, { public_id: '', url }] }));
+    };
+    const updateImage = (index, url) => {
+        setFormData(prev => {
+            const images = [...prev.images];
+            images[index] = { ...images[index], url };
+            return { ...prev, images };
+        });
+    };
+    const removeImage = (index) => {
+        setFormData(prev => {
+            const images = prev.images.filter((_, i) => i !== index);
+            return { ...prev, images };
+        });
+    };
+
+    const validate = () => {
+        if (!formData.name || formData.name.trim().length === 0) return 'Product name is required.';
+        if (formData.name.length > 100) return 'Product name cannot exceed 100 characters.';
+        if (formData.price == null || formData.price <= 0) return 'Product price must be greater than 0.';
+        if (!formData.description || formData.description.trim().length === 0) return 'Product description is required.';
+        if (!formData.seller || formData.seller.trim().length === 0) return 'Product seller is required.';
+        if (formData.stock == null || formData.stock < 0) return 'Product stock must be 0 or greater.';
+        if (!formData.category || !CATEGORIES.includes(formData.category)) return 'Please select a valid category.';
+        // images optional but if present must have url
+        for (let img of formData.images) {
+            if (!img || !img.url || img.url.trim() === '') return 'All images must have a valid URL or be removed.';
+        }
+        return '';
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        if (!formData.name || formData.price <= 0 || formData.stock < 0) {
-            setValidationError('Please ensure all fields are valid. Price must be greater than 0.');
+        const err = validate();
+        if (err) {
+            setValidationError(err);
             return;
         }
 
         setSaving(true);
         const apiMethod = isEdit ? 'PUT' : 'POST';
         const apiEndpoint = isEdit ? `/api/admin/products/${product.id}` : '/api/admin/products';
-        const successMessage = isEdit 
-            ? `Product '<strong>${formData.name}</strong>' updated successfully.` 
+        const successMessage = isEdit
+            ? `Product '<strong>${formData.name}</strong>' updated successfully.`
             : `New product '<strong>${formData.name}</strong>' added successfully.`;
-        
+
+        // Normalize images to { public_id, url }
+        const imagesPayload = formData.images.map((img, idx) => {
+            // if img already has public_id keep it, otherwise generate a lightweight id for demo
+            const public_id = img.public_id && img.public_id.length ? img.public_id : `img_${Date.now()}_${idx}`;
+            return { public_id, url: img.url };
+        });
+
+        const payload = {
+            name: formData.name.trim(),
+            price: Number(formData.price),
+            stock: Number(formData.stock),
+            description: formData.description.trim(),
+            ratings: Number(formData.ratings || 0),
+            images: imagesPayload,
+            category: formData.category,
+            seller: formData.seller.trim()
+        };
+
         try {
             setUIMessage({ type: 'info', text: isEdit ? 'Updating product...' : 'Adding new product...' });
-            await api.action(apiMethod, apiEndpoint, formData);
+            await api.action(apiMethod, apiEndpoint, payload);
             setUIMessage({ type: 'success', text: successMessage });
-            onSave(); // Trigger data refresh
+            onSave();
             onClose();
         } catch (error) {
             setUIMessage({ type: 'error', text: `Error: ${error.message}` });
@@ -154,78 +213,93 @@ const ProductFormModal = ({ product, onClose, onSave, setUIMessage }) => {
 
     return (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
                 <form onSubmit={handleSubmit}>
                     <div className="p-6">
                         <div className="flex justify-between items-center border-b pb-3 mb-4">
                             <h3 className="text-2xl font-bold text-gray-800">{isEdit ? 'Edit Product' : 'Add New Product'}</h3>
                             <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-700 text-3xl transition">&times;</button>
                         </div>
-                        
+
                         {validationError && (
                             <div className="p-3 mb-3 text-sm bg-red-100 border border-red-300 text-red-700 rounded-lg">{validationError}</div>
                         )}
 
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">Product Name</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="e.g., Smart Watch Pro"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
+                                <input id="name" name="name" value={formData.name} onChange={handleChange} required maxLength={100}
+                                       placeholder="e.g., Smart Watch Pro"
+                                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="price">Price ($)</label>
-                                <input
-                                    type="number"
-                                    id="price"
-                                    name="price"
-                                    value={formData.price}
-                                    onChange={handleChange}
-                                    min="0.01"
-                                    step="0.01"
-                                    required
-                                    placeholder="199.99"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="price">Price ($)</label>
+                                    <input id="price" name="price" type="number" value={formData.price} onChange={handleChange} min="0.01" step="0.01" required
+                                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="stock">Stock Quantity</label>
+                                    <input id="stock" name="stock" type="number" value={formData.stock} onChange={handleChange} min="0" required
+                                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
+                                </div>
                             </div>
+
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="stock">Stock Quantity</label>
-                                <input
-                                    type="number"
-                                    id="stock"
-                                    name="stock"
-                                    value={formData.stock}
-                                    onChange={handleChange}
-                                    min="0"
-                                    required
-                                    placeholder="50"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
+                                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="category">Category</label>
+                                <select id="category" name="category" value={formData.category} onChange={handleChange} required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">-- Select Category --</option>
+                                    {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="seller">Seller</label>
+                                <input id="seller" name="seller" value={formData.seller} onChange={handleChange} required
+                                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="description">Description</label>
+                                <textarea id="description" name="description" value={formData.description} onChange={handleChange} required rows={4}
+                                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Images (URLs)</label>
+                                <div className="space-y-2">
+                                    {formData.images.map((img, idx) => (
+                                        <div key={idx} className="flex items-center space-x-2">
+                                            <input
+                                                type="url"
+                                                placeholder="https://example.com/image.jpg"
+                                                value={img.url}
+                                                onChange={(e) => updateImage(idx, e.target.value)}
+                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                            />
+                                            <button type="button" onClick={() => removeImage(idx)} className="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600">Remove</button>
+                                        </div>
+                                    ))}
+                                    <div>
+                                        <button type="button" onClick={() => addImage('')} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Add Image</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Ratings (readonly)</label>
+                                <input type="number" name="ratings" value={formData.ratings} onChange={handleChange} min="0" max="5"
+                                       className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
+                                <p className="text-xs text-gray-500 mt-1">Ratings default/current value. Usually updated from reviews.</p>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="p-6 pt-0 flex justify-end space-x-3">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-200 rounded-xl hover:bg-gray-300 transition"
-                            disabled={saving}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className={`px-5 py-2.5 text-sm font-medium text-white rounded-xl transition shadow-lg ${saving ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}
-                            disabled={saving}
-                        >
+                        <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-200 rounded-xl hover:bg-gray-300 transition" disabled={saving}>Cancel</button>
+                        <button type="submit" disabled={saving} className={`px-5 py-2.5 text-sm font-medium text-white rounded-xl transition shadow-lg ${saving ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
                             {saving ? 'Processing...' : (isEdit ? 'Save Changes' : 'Add Product')}
                         </button>
                     </div>
