@@ -10,9 +10,7 @@ const ACCENT_COLOR_CLASS = 'text-indigo-500';
 // --- ICON MOCK (Using simple text/emojis) ---
 const Icon = ({ children, className = '' }) => <span className={`mr-2 ${className}`}>{children}</span>;
 
-// ----------------------------------------------------------------------------------
-// API CONNECTION LOGIC (MOCKING FOR NODE.JS INTEGRATION)
-// ----------------------------------------------------------------------------------
+
 
 const api = {
     fetch: async (endpoint) => {
@@ -66,10 +64,7 @@ const api = {
     }
 };
 
-// ----------------------------------------------------------------------------------
-// UTILITY COMPONENTS 
-// ----------------------------------------------------------------------------------
-
+//// statcard 
 const StatCard = ({ title, value, iconText, color, trend }) => (
     <div className="p-5 bg-white rounded-xl shadow-lg border-t-4 transition duration-300 hover:shadow-2xl" style={{ borderColor: color }}>
         <div className="flex justify-between items-start">
