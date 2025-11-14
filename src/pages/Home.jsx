@@ -4,6 +4,9 @@ import SpecialOffer from "../components/specialOffer/SpecialOffer";
 import Products from "../components/products/Products";
 import CartPopup from "../components/CartPopup";
 
+
+
+
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
@@ -28,6 +31,9 @@ const Home = () => {
       alert(`${product.name} added to cart ✅`);
     }
   };
+
+
+  //nice
 
   return (
     <div className="min-h-screen bg-gray-50">
