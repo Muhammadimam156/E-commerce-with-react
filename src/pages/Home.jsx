@@ -11,7 +11,7 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
-
+//use effect function 
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
       .then((res) => res.json())
