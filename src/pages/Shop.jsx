@@ -17,7 +17,7 @@ const StarRating = ({ rating }) => {
     );
 };
 
-// --- HELPER COMPONENT: Product Card ---   check out
+
 const ProductCard = ({ product }) => (
     <div className="bg-gray-800 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-orange-500/30 cursor-pointer">
         <div className="h-48 bg-gray-700 flex items-center justify-center p-4">
