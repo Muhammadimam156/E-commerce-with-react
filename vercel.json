@@ -1,6 +1,5 @@
 {
   "version": 2,
-  //version 2 working but 3 is not working 
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "routes": [
